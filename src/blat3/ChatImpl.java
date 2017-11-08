@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 public class ChatImpl {
     
     public static void main(String[] tArgs) {
-        
+        //I don't care if I get too many arguments
         if(tArgs.length >= 1) {
             switch(tArgs[0]){
                 case "SERVER":{
@@ -22,12 +22,12 @@ public class ChatImpl {
                     break;
                 }
                 default:{
-                    System.out.println("Usage: java ChatImpl <SERVER|CLIENT>");
+                    System.out.println("Usage: java "+ChatImpl.class.getName()+" <SERVER|CLIENT>");
                     System.exit(1);
                 }
             }
         } else {
-            System.out.println("Usage: java ChatImpl <SERVER|CLIENT>");
+            System.out.println("Usage: java "+ChatImpl.class.getName()+" <SERVER|CLIENT>");
             System.exit(1);
         }
     }

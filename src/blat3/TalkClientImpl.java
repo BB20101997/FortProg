@@ -29,10 +29,10 @@ public class TalkClientImpl implements TalkClient {
     }
     
     public static void main(String[] tArgs) {
-        Registry r = getOrCreateRegistry();
         switch(tArgs.length){
             case 1:{
                 try{
+                    Registry r = getOrCreateRegistry();
                     TalkClientImpl we = new TalkClientImpl();
                     we.name = tArgs[0];
                     r.rebind(REG, UnicastRemoteObject.exportObject(we, 0));
@@ -59,8 +59,8 @@ public class TalkClientImpl implements TalkClient {
             }
             default:{
                 System.err.println("Usage");
-                System.err.println("To receive a call: java blat3.TalkClientImpl <user>");
-                System.err.println("To call someone: java blat3.TalkClientImpl <user> <host>");
+                System.err.println("To receive a call: java "+TalkClient.class.getName()+" <user>");
+                System.err.println("To call someone: java "+TalkClient.class.getName()+" <user> <host>");
                 System.exit(1);
             }
         }
