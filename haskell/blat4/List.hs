@@ -20,7 +20,21 @@ indexOf e list = indexHelp e list 0
             | e == h = Just i
             | otherwise = indexHelp e t $! (i+1)
         indexHelp _ [] _ = Nothing
---inits
---tails
---insert
---perms
+
+tails::[a]->[[a]]
+tails a = tailHelp a []
+    where
+        tailHelp::[a]->[[a]]->[[a]]
+        tailHelp (h:t) l = tailHelp t ((h:t):l)
+        tailHelp [] l = []:l
+
+inits::[a]->[[a]]
+inits a = initHelp (reversed a) []
+    where
+        initHelp::[a]->[[a]]->[[a]]
+        initHelp (h:t) l = initHelp t ((reversed (h:t)):l)
+        initHelp [] l = []:l
+
+--insert::a->[a]->[[a]]
+
+--perms::[a]->[[a]]
