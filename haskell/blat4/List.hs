@@ -10,7 +10,7 @@ reversed::[a]->[a]
 reversed a = revHelp a []
     where
         revHelp::[a]->[a]->[a]
-        revHelp (h:t) b = revHelp t (h:b)
+        revHelp (h:t) b = revHelp t $! (h:b)
         revHelp [] a = a
 
 indexOf::Int->[Int]->Maybe Int
@@ -26,21 +26,21 @@ tails::[a]->[[a]]
 tails a = tailHelp a []
     where
         tailHelp::[a]->[[a]]->[[a]]
-        tailHelp (h:t) l = tailHelp t ((h:t):l)
+        tailHelp (h:t) l = tailHelp t $! ((h:t):l)
         tailHelp [] l = []:l
 
 inits::[a]->[[a]]
 inits a = initHelp (reversed a) []
     where
         initHelp::[a]->[[a]]->[[a]]
-        initHelp (h:t) l = initHelp t ((reversed (h:t)):l)
+        initHelp (h:t) l = initHelp t $! ((reversed (h:t)):l)
         initHelp [] l = []:l
 
 insert::a->[a]->[[a]]
 insert a list = insertHelp a [] (inits list) (reversed (tails list))
     where
         insertHelp::a->[[a]]->[[a]]->[[a]]->[[a]]
-        insertHelp a list (hi:ti) (ht:tt) = insertHelp  a ((hi++[a]++ht):list) ti tt
+        insertHelp a list (hi:ti) (ht:tt) = (insertHelp a $! ((hi++[a]++ht):list)) ti tt
         insertHelp a list _ _ = list
 
 perms::[a]->[[a]]
@@ -50,4 +50,4 @@ perms (h:t) = permHelp h t [[]] []
         permHelp::a->[a]->[[a]]->[[a]]->[[a]]
         permHelp _ []    []    list = list
         permHelp _ (h:t) []    list = permHelp h t list []
-        permHelp a b     (h:t) list = permHelp a b t ((insert a h)++list)
+        permHelp a b     (h:t) list = permHelp a b t $! ((insert a h)++list)

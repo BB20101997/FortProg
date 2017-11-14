@@ -17,7 +17,7 @@ sumTreeAku b = akuHelper b 0
     where
         akuHelper::Tree Int->Int->Int
         akuHelper (Leaf a) aku = aku+a
-        akuHelper (Branch a b) aku = akuHelper a (akuHelper b aku)
+        akuHelper (Branch a b) aku = akuHelper a $! (akuHelper b aku)
 
 mirrorTree::Tree a->Tree a
 mirrorTree (Leaf a) = (Leaf a)
@@ -31,4 +31,4 @@ treeToList t = ttlHelp t []
     where
         ttlHelp::Tree a->[a]->[a]
         ttlHelp (Leaf a) list = a : list
-        ttlHelp (Branch a b) list = (ttlHelp a (ttlHelp b list))
+        ttlHelp (Branch a b) list = (ttlHelp a $! (ttlHelp b list))
