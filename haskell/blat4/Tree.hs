@@ -26,4 +26,4 @@ treeToList t = ttlHelp t []
     where
         ttlHelp::Tree a->[a]->[a]
         ttlHelp (Leaf a) list = a : list
-        ttlHelp (Branch a b) list = (ttlHelp a $! (ttlHelp b list))
+        ttlHelp (Branch a b) list = (ttlHelp a $! (ttlHelp b list))  --Sieht toll aus
