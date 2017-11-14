@@ -1,6 +1,7 @@
 #!/usr/bin/ghci
 module List where
 
+--laufzeit O(n(n+1)/2) also O(n²)
 reversedRecursiv::[a]->[a]
 reversedRecursiv [] = []
 reversedRecursiv (a:b) = (reversedRecursiv b)++[a]
