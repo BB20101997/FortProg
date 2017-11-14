@@ -35,6 +35,11 @@ inits a = initHelp (reversed a) []
         initHelp (h:t) l = initHelp t ((reversed (h:t)):l)
         initHelp [] l = []:l
 
---insert::a->[a]->[[a]]
+insert::a->[a]->[[a]]
+insert a list = insertHelp a [] (inits list) (reversed (tails list))
+    where
+        insertHelp::a->[[a]]->[[a]]->[[a]]->[[a]]
+        insertHelp a list (hi:ti) (ht:tt) = insertHelp  a ((hi++[a]++ht):list) ti tt
+        insertHelp a list _ _ = list
 
 --perms::[a]->[[a]]
