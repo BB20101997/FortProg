@@ -3,9 +3,8 @@ data SearchTree = Branch SearchTree SearchTree Int
 
 insert::SearchTree->Int->SearchTree
 insert (Branch l r i) n
-        | i>n = insert l n
-        | i<n = insert r n
-        | i==n = Branch l r i
+        | i>n =  Branch (insert l n) r
+        | i<=n =  Branch l (insert r n)
 insert Empty n = Branch Empty Empty n
 
 isElem::SearchTree->Int->Bool
