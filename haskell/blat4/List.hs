@@ -42,4 +42,11 @@ insert a list = insertHelp a [] (inits list) (reversed (tails list))
         insertHelp a list (hi:ti) (ht:tt) = insertHelp  a ((hi++[a]++ht):list) ti tt
         insertHelp a list _ _ = list
 
---perms::[a]->[[a]]
+perms::[a]->[[a]]
+perms [] = [[]]
+perms (h:t) = let p = perms t
+              in (permHelp h p)++p
+    where
+        permHelp::a->[[a]]->[[a]]
+        permHelp a (h:t) = (insert a h)++(permHelp a t)
+        permHelp a  [] = []
