@@ -1,3 +1,4 @@
+#!/usr/bin/ghci
 module Graphics where
 
 data Point =  Point Double Double
@@ -23,6 +24,7 @@ single o = Graphic o Empty
 
 (<>)::Graphic->Graphic->Graphic
 Empty <> t = t
+t <> Empty = t
 (Graphic o g) <> t = (Graphic o (g<>t))
 
 objToSVG::Object->String
