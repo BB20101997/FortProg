@@ -1,4 +1,5 @@
 #!/usr/bin/runhaskell
+--basically a function that returns True if a given Int is in the Set
 type Set = (Int -> Bool)
 
 empty::Set
