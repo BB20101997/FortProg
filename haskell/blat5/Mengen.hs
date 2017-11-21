@@ -1,4 +1,4 @@
-#!/usr/bin/runhaskell
+#!/usr/bin/ghci
 --basically a function that returns True if a given Int is in the Set
 type Set = (Int -> Bool)
 
@@ -6,10 +6,10 @@ empty::Set
 empty=(\_->False)  
 
 insert::Set->Int->Set
-insert s i = (\x -> x==i||(s i))
+insert s i = (\x -> x==i||(s x))
 
 remove::Set->Int->Set
-remove s i = (\x -> i/=x&&(s i))
+remove s i = (\x -> i/=x&&(s x))
 
 isElem::Set->Int->Bool
 isElem m i = m i 

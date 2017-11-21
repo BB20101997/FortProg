@@ -1,4 +1,4 @@
-#!/usr/bin/runhaskell
+#!/usr/bin/ghci
 data Tree a = Leaf a 
               | Branch (Tree a) (Tree a)
 
