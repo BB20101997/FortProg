@@ -1,0 +1,9 @@
++ nicht Endliche Mengen sind möglich und behalten ihre funktionalität,
+	Mengen über Listen haben bei einer unendlichen Liste das problem das viele ihrer operationen nur bei endlichen listen (gut) funktionieren [endlose rekursion]
+	, Mengen desen ELementen eine funktionale abhängigkeit erfüllen lassen sich definieren ohne alle Elemente aufzuzählen
++ die Komplement bildung ist möglich 
+-+ die Laufzeit von isElem ist nicht O(Elemente der Menge),
+	sondern O(Mengen operationen zum erstellen der Menge) bei nur durch empty und Mengen operationen erstellten Mengen,
+	bei nicht mittels empty erstellten Mengen kommt noch die Laufzeit der sie definierenden Funktionen hinzu	
+- man kann nur prüfen ob eine Element enthalten ist und sich nicht ausgeben lassen welche Enthalten sind
+
