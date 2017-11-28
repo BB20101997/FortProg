@@ -2,6 +2,9 @@ package blatt6;
 
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Fold {
 
@@ -22,6 +25,18 @@ public class Fold {
 		}
 		return leer;
 
+	}
+	
+	public static void incrementFunctions(){
+		
+		List<Function<Integer,Integer>> incs = IntStream.rangeClosed(0,10)
+																.mapToObj(i->(Function<Integer,Integer>)(x->x+i))
+																.collect(Collectors.toList());
+		for(Function<Integer,Integer> f:incs){
+			System.out.println(f.apply(0));
+		}
+		
+		
 	}
 
 }
