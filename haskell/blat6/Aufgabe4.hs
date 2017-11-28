@@ -1,6 +1,6 @@
 --1.1
 {- Wenn f,g nicht global wären
-erstens:: (a->c->d)->(b->c)->b->a->c
+erstens:: (a->c->d)->(b->a)->b->a->d
 erstens f g x y = f (g x) y
 -}
 erstens:: a->b->c
