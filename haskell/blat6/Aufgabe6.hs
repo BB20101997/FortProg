@@ -1,4 +1,6 @@
 #!/usr/bin/ghci
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE UndecidableInstances #-}
 
 class Pretty a where
     pretty::a->String
@@ -15,13 +17,20 @@ pretListElem::String->[String]->String
 pretListElem tailPrefix (head:tail) = unlines $ ("+-- "++head):(map (tailPrefix++) tail)
 pretListElem tailprefix [] = ""
 
-instance Pretty a => Pretty [a] where
+instance {-# OVERLAPS #-} Pretty a => Pretty [a] where
     pretty [] = ""
     pretty (a:[]) = pretListElem "    " (lines.pretty $ a)
     pretty (a:tail) =  (pretListElem "|   " (lines.pretty $ a))++(pretty tail)
 
-instance Pretty Int where
+instance {-# OVERLAPS #-} Pretty [Char] where
+    pretty = id
+
+instance Pretty a => Pretty (Maybe a) where
+    pretty Nothing = "Nothing"
+    pretty (Just n) = pretty n 
+
+instance {-# OVERLAPPABLE #-}(Show a)=>(Pretty a)where
     pretty = show
 
-instance (Pretty a) => Pretty (Rose a) where
+instance {-# OVERLAPS #-} (Pretty a) => Pretty (Rose a) where
     pretty (Rose a list) =  pretty a ++"\n"++ pretty list
