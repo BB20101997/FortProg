@@ -13,6 +13,8 @@ instance Eq a => Eq (Rose a) where
 instance Ord a => Ord (Rose a) where
     compare (Rose a1 l1) (Rose a2 l2) = case compare a1 a2 of
                                              EQ -> compare l1 l2
+                                             a -> a
+
 pretListElem::String->[String]->String
 pretListElem tailPrefix (head:tail) = unlines $ ("+-- "++head):(map (tailPrefix++) tail)
 pretListElem tailprefix [] = ""
