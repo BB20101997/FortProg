@@ -54,9 +54,10 @@ nub [] = []
 
 matchTerm :: Term -> Term -> Maybe Subst
 matchTerm (Var i) t =  Just (Subst [(i,t)])
+matchTerm (Comb _ _ ) (Var _) = Nothing
 matchTerm (Comb funName terms) (Comb funName2 terms2) | (funName/=funName2) = Nothing --different functions don't match
                                                       | (length terms)/=(length terms2) = Nothing --different argument count doesn't match
-                                                      | otherwise =  foldr mergeSubst (Just (Subst [])) (map (uncurry matchTerm) (zip terms terms2)) --matchis for this level merge substitutions of all arguments
+                                                      | otherwise =  foldr mergeSubst (Just (Subst [])) (map (uncurry matchTerm) (zip terms terms2)) --matches for this level merge substitutions of all arguments
     where
             hasConflictingDuplicate::[(VarIndex, Term)]->[(VarIndex, Term)]->Bool 
             hasConflictingDuplicate _           []    = False --an empty list can't have a conflict
@@ -77,17 +78,19 @@ foldMaybe::[a]->Maybe a->[a]
 foldMaybe list  Nothing  = list
 foldMaybe list (Just m)  = m:list
 
-applyRule::Term->Rule->Maybe Term 
-applyRule t (Rule pred res) = case (matchTerm pred t) of Nothing -> Nothing
-                                                         Just s  -> Just $ applySubst s res
-
 selectRule :: Program -> Term -> Maybe Term
 selectRule rules term = (foldl foldMaybe (map (applyRule term) rules) []) !! 0
+    where
+        applyRule::Term->Rule->Maybe Term 
+        applyRule t (Rule pred res) = case (matchTerm pred t) of Nothing -> Nothing
+                                                                 Just s  -> Just $ applySubst s res
 
 reduceAt :: Program -> Term -> Pos -> Maybe Term
 reduceAt program term pos = case term <|> pos of
                                 Nothing -> Nothing
-                                Just t  -> replaceAt term pos t
+                                Just t1  -> case selectRule program t1 of
+                                                Nothing -> Nothing
+                                                Just t2 -> replaceAt term pos t2
 
 allPos :: Term -> [Pos]
 allPos (Var i) = [[]]
@@ -109,10 +112,20 @@ isNormalForm p t = case reducablePos p t of
                         [] -> True
                         _  -> False
 
-{-
-
 reduceWith :: Program -> Term -> Strategy -> Maybe Term
+reduceWith p t _ | isNormalForm p t = Nothing
+reduceWith p t s = reduceAt p t (s p t)
 
 evalWith :: Program -> Term -> Strategy -> Term
--}
+evalWith p t s = case reduceWith p t s of
+                    Just term -> evalWith p term s
+                    Nothing   -> t
 
+loStrat::Strategy
+loStrat p = head.(reducablePos p)
+
+square::Program
+square = [Rule (Comb "sq" [Var 1]) (Comb "*" [Var 1,Var 1])]
+
+termSquare::Term
+termSquare = (Comb "sq" [Comb "2" []])
