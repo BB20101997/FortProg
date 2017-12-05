@@ -43,22 +43,31 @@ replaceAt _           _      _ = Nothing
 
 --Ende der Vorgaben aus Vorlesung
 
+doSubstConflict::(VarIndex,Term)->(VarIndex,Term)->Bool
+doSubstConflict (v1,_) (v2,_) | v1/=v2 = False
+doSubstConflict (_,t1) (_,t2)  = t1/=t2
+
+--Implementing Library functions is fun
+nub::(Eq a)=>[a]->[a]
+nub (h:t) = h:nub (filter (\e->e/=h)  t)
+nub [] = []
+
 matchTerm :: Term -> Term -> Maybe Subst
 matchTerm (Var i) t =  Just (Subst [(i,t)])
-matchTerm (Comb funName terms) (Comb funName2 terms2) | (funName==funName2&&(length terms)==(length terms2)) = foldr mergeSubst (Just (Subst [])) (map (uncurry matchTerm) (zip terms terms2))
-                                                      | otherwise =  Nothing
+matchTerm (Comb funName terms) (Comb funName2 terms2) | (funName/=funName2) = Nothing --different functions don't match
+                                                      | (length terms)/=(length terms2) = Nothing --different argument count doesn't match
+                                                      | otherwise =  foldr mergeSubst (Just (Subst [])) (map (uncurry matchTerm) (zip terms terms2)) --match for this level merge substitutions of all arguments
     where
-            hasDuplicate::[(VarIndex, Term)]->[(VarIndex, Term)]->Bool --check if there is a substitution for the same varIndex but witha different term
-            hasDuplicate _           []    = False
-            hasDuplicate []          _     = False
-            hasDublicate (head:tail) list2 = (foldr (\v b -> b||(isDuplicate head v)) False list2) || hasDuplicate tail list2
-                where isDuplicate::(VarIndex,Term)->(VarIndex,Term)->Bool
-                      isDuplicate (i,t) (i2,t2) = i==i&&t/=t2
+            hasConflictingDuplicate::[(VarIndex, Term)]->[(VarIndex, Term)]->Bool 
+            hasConflictingDuplicate _           []    = False --an empty list can't have a conflict
+            hasConflictingDuplicate []          _     = False --as above
+            hasConflictingDuplicate (head:tail) list2 = (foldr (\v b -> b||(doSubstConflict head v)) False list2) || hasConflictingDuplicate tail list2
+            
             mergeSubst::(Maybe Subst)->(Maybe Subst)->(Maybe Subst)
-            mergeSubst Nothing _ = Nothing
-            mergeSubst _ Nothing = Nothing
-            mergeSubst (Just (Subst list1)) (Just (Subst list2)) | hasDuplicate list1 list2 = Nothing
-                                                                 | otherwise = Just (Subst $ list1++list2)
+            mergeSubst Nothing _ = Nothing --nothing and something merges to nothing as it means a partial term does not have valid substitutions 
+            mergeSubst _ Nothing = Nothing --as above
+            mergeSubst (Just (Subst list1)) (Just (Subst list2)) | hasConflictingDuplicate list1 list2 = Nothing --we have a substitution for the save VarIndex that is not equivalent  
+                                                                 | otherwise = Just (Subst (nub  $ list1++list2)) --remove duplicate identical substitutions
 
 {-
 selectRule :: Program -> Term -> Maybe Term
