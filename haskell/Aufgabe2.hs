@@ -48,9 +48,9 @@ matchTerm (Var i) t =  Just (Subst [(i,t)])
 matchTerm (Comb funName terms) (Comb funName2 terms2) | (funName==funName2&&(length terms)==(length terms2)) = foldr mergeSubst (Just (Subst [])) (map (uncurry matchTerm) (zip terms terms2))
                                                       | otherwise =  Nothing
     where
-            hasDuplicate::[(VarIndex, Term)]->[(VarIndex, Term)]->Bool
-            hasDuplicate _ [] = False
-            hasDuplicate [] _ = False
+            hasDuplicate::[(VarIndex, Term)]->[(VarIndex, Term)]->Bool --check if there is a substitution for the same varIndex but witha different term
+            hasDuplicate _           []    = False
+            hasDuplicate []          _     = False
             hasDublicate (head:tail) list2 = (foldr (\v b -> b||(isDuplicate head v)) False list2) || hasDuplicate tail list2
                 where isDuplicate::(VarIndex,Term)->(VarIndex,Term)->Bool
                       isDuplicate (i,t) (i2,t2) = i==i&&t/=t2
