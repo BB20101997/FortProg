@@ -56,7 +56,7 @@ matchTerm :: Term -> Term -> Maybe Subst
 matchTerm (Var i) t =  Just (Subst [(i,t)])
 matchTerm (Comb funName terms) (Comb funName2 terms2) | (funName/=funName2) = Nothing --different functions don't match
                                                       | (length terms)/=(length terms2) = Nothing --different argument count doesn't match
-                                                      | otherwise =  foldr mergeSubst (Just (Subst [])) (map (uncurry matchTerm) (zip terms terms2)) --match for this level merge substitutions of all arguments
+                                                      | otherwise =  foldr mergeSubst (Just (Subst [])) (map (uncurry matchTerm) (zip terms terms2)) --matchis for this level merge substitutions of all arguments
     where
             hasConflictingDuplicate::[(VarIndex, Term)]->[(VarIndex, Term)]->Bool 
             hasConflictingDuplicate _           []    = False --an empty list can't have a conflict
@@ -69,9 +69,22 @@ matchTerm (Comb funName terms) (Comb funName2 terms2) | (funName/=funName2) = No
             mergeSubst (Just (Subst list1)) (Just (Subst list2)) | hasConflictingDuplicate list1 list2 = Nothing --we have a substitution for the save VarIndex that is not equivalent  
                                                                  | otherwise = Just (Subst (nub  $ list1++list2)) --remove duplicate identical substitutions
 
-{-
-selectRule :: Program -> Term -> Maybe Term
+isJust::(Maybe a)->Bool
+isJust Nothing = False
+isJust _       = True
 
+foldMaybe::[a]->Maybe a->[a]
+foldMaybe list  Nothing  = list
+foldMaybe list (Just m)  = m:list
+
+applyRule::Term->Rule->Maybe Term 
+applyRule t (Rule pred res) = case (matchTerm pred t) of Nothing -> Nothing
+                                                         Just s  -> Just $ applySubst s res
+
+selectRule :: Program -> Term -> Maybe Term
+selectRule rules term = (foldl foldMaybe (map (applyRule term) rules) []) !! 0
+
+{-
 reduceAt :: Program -> Term -> Pos -> Maybe Term
 
 reducablePos :: Program -> Term -> [Pos]
