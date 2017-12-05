@@ -7,7 +7,7 @@ data Term = Var VarIndex
   deriving (Show,Eq)
 
 data Subst = Subst [(VarIndex, Term)]
-  deriving (Show,Eq)
+  deriving Show
 
 type Pos = [Int]
 
@@ -84,14 +84,32 @@ applyRule t (Rule pred res) = case (matchTerm pred t) of Nothing -> Nothing
 selectRule :: Program -> Term -> Maybe Term
 selectRule rules term = (foldl foldMaybe (map (applyRule term) rules) []) !! 0
 
-{-
 reduceAt :: Program -> Term -> Pos -> Maybe Term
-
-reducablePos :: Program -> Term -> [Pos]
+reduceAt program term pos = case term <|> pos of
+                                Nothing -> Nothing
+                                Just t  -> replaceAt term pos t
 
 allPos :: Term -> [Pos]
+allPos (Var i) = [[]]
+allPos (Comb _ terms) = let
+                            subPos = map allPos terms
+                            subIndexed = zip [1..] subPos
+                            indexPrePos = concatMap (\(p,subt) -> map ((:) p) subt) subIndexed
+                        in
+                            []:indexPrePos
+
+reducablePos :: Program -> Term -> [Pos]
+reducablePos p t = filter (isJust.selectRuleMaybe.(t <|>)) (allPos t)
+    where selectRuleMaybe::Maybe Term->Maybe Term
+          selectRuleMaybe Nothing  = Nothing
+          selectRuleMaybe (Just j) = selectRule p j
 
 isNormalForm :: Program -> Term -> Bool
+isNormalForm p t = case reducablePos p t of
+                        [] -> True
+                        _  -> False
+
+{-
 
 reduceWith :: Program -> Term -> Strategy -> Maybe Term
 
