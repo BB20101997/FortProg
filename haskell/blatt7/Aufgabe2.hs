@@ -43,14 +43,6 @@ replaceAt _           _      _ = Nothing
 
 --Ende der Vorgaben aus Vorlesung
 
-doSubstConflict::(VarIndex,Term)->(VarIndex,Term)->Bool
-doSubstConflict (v1,_) (v2,_) | v1/=v2 = False
-doSubstConflict (_,t1) (_,t2)  = t1/=t2
-
---Implementing Library functions is fun
-nub::(Eq a)=>[a]->[a]
-nub (h:t) = h:nub (filter (\e->e/=h)  t)
-nub [] = []
 
 matchTerm :: Term -> Term -> Maybe Subst
 matchTerm (Var i) t =  Just (Subst [(i,t)])
@@ -63,12 +55,15 @@ matchTerm (Comb funName terms) (Comb funName2 terms2) | (funName/=funName2) = No
             hasConflictingDuplicate _           []    = False --an empty list can't have a conflict
             hasConflictingDuplicate []          _     = False --as above
             hasConflictingDuplicate (head:tail) list2 = (foldr (\v b -> b||(doSubstConflict head v)) False list2) || hasConflictingDuplicate tail list2
-            
+                where 
+                    doSubstConflict::(VarIndex,Term)->(VarIndex,Term)->Bool
+                    doSubstConflict (v1,_) (v2,_) | v1/=v2 = False
+                    doSubstConflict (_,t1) (_,t2)  = t1/=t2
             mergeSubst::(Maybe Subst)->(Maybe Subst)->(Maybe Subst)
             mergeSubst Nothing _ = Nothing --nothing and something merges to nothing as it means a partial term does not have valid substitutions 
             mergeSubst _ Nothing = Nothing --as above
-            mergeSubst (Just (Subst list1)) (Just (Subst list2)) | hasConflictingDuplicate list1 list2 = Nothing --we have a substitution for the save VarIndex that is not equivalent  
-                                                                 | otherwise = Just (Subst (nub  $ list1++list2)) --remove duplicate identical substitutions
+            mergeSubst (Just (Subst list1)) (Just (Subst list2)) | hasConflictingDuplicate list1 list2 = Nothing --we have a substitution for the same VarIndex that is not equivalent  
+                                                                 | otherwise = Just (Subst $ list1++list2)
 
 isJust::(Maybe a)->Bool
 isJust Nothing = False
@@ -123,10 +118,13 @@ loStrat::Strategy
 loStrat p = head.(reducablePos p)
 
 square::Program
-square = [Rule (Comb "sq" [Var 1]) (Comb "*" [Var 1,Var 1]),Rule (Comb "f" [Var 1]) (Comb "1" []),Rule (Comb "h" []) (Comb "h" [])]
+square = [Rule (Comb "sq" [Var 1]) (Comb "*" [Var 1,Var 1]),Rule (Comb "f" [Var 1]) (Comb "1" []),Rule (Comb "h" []) (Comb "h" []),Rule (Comb "==" [Var 1,Var 1]) (Comb "True" []), Rule (Comb "==" [Var 1,Var 2]) (Comb "False" [])]
 
 termSquare::Term
 termSquare = (Comb "sq" [Comb "2" []])
 
 termLoTest::Term
 termLoTest = (Comb "f" [Comb "h" []])
+
+termTestEq::Term
+termTestEq = (Comb "==" [Comb "1" [],Comb "2" []])
