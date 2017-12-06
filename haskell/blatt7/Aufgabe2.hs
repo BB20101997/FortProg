@@ -74,12 +74,10 @@ isJust::(Maybe a)->Bool
 isJust Nothing = False
 isJust _       = True
 
-foldMaybe::[a]->Maybe a->[a]
-foldMaybe list  Nothing  = list
-foldMaybe list (Just m)  = m:list
-
 selectRule :: Program -> Term -> Maybe Term
-selectRule rules term = (foldl foldMaybe (map (applyRule term) rules) []) !! 0
+selectRule rules term = case (filter isJust (map (applyRule term) rules)) of
+                            [] -> Nothing
+                            (firstMatch:_) -> firstMatch
     where
         applyRule::Term->Rule->Maybe Term 
         applyRule t (Rule pred res) = case (matchTerm pred t) of Nothing -> Nothing
@@ -125,7 +123,10 @@ loStrat::Strategy
 loStrat p = head.(reducablePos p)
 
 square::Program
-square = [Rule (Comb "sq" [Var 1]) (Comb "*" [Var 1,Var 1])]
+square = [Rule (Comb "sq" [Var 1]) (Comb "*" [Var 1,Var 1]),Rule (Comb "f" [Var 1]) (Comb "1" []),Rule (Comb "h" []) (Comb "h" [])]
 
 termSquare::Term
 termSquare = (Comb "sq" [Comb "2" []])
+
+termLoTest::Term
+termLoTest = (Comb "f" [Comb "h" []])
