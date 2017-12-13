@@ -1,3 +1,4 @@
+#!/usr/bin/ghci
 import Data.Maybe
 
 first::[Int]
@@ -20,7 +21,7 @@ lookupWithComp:: Eq a => a -> [(a, b)] -> Maybe b
 lookupWithComp elem list = listToMaybe [e | (d,e)<-list, d==elem]
 
 replicateWithComp:: Int -> a -> [a] 
-replicateWithComp n obj = take n [obj]
+replicateWithComp n obj = [obj|i<-[1..n]]
 
 filterWithComp::(a -> Bool) -> [a] -> [a]
 filterWithComp f list = [c | c<-list, f c]
