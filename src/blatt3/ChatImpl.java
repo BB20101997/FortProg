@@ -1,4 +1,4 @@
-package blat3;
+package blatt3;
 
 import java.net.MalformedURLException;
 import java.rmi.*;

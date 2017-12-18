@@ -1,4 +1,4 @@
-package blat3;
+package blatt3;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
