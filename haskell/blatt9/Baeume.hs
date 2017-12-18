@@ -53,8 +53,7 @@ prop_tree_size_check tree = collect (size tree) $ (length.toList $ tree) == (siz
 
 instance Arbitrary Tree where
     arbitrary = do
-                    a <- arbitrary 
+                    a <- arbitrary
                     b <- arbitrary
-                    d <- elements [Empty,Node a b]
-                    in 
-                        d
+                    i <- arbitrary
+                    elements [Leaf i,Node a b]
