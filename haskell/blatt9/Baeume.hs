@@ -50,10 +50,21 @@ prop_flat_knocking_sorted list = (flachKlopfen.treeFromList $ list) == (sort.nub
 
 prop_tree_size_check::Tree->Property
 prop_tree_size_check tree = collect (size tree) $ (length.toList $ tree) == (size tree)
+{-
+Die Listengröße bewegt sich in der Regel zwichen 1 und 100 und listen einer Größe tretten im normal Fall
+in weniger als 10% der Fälle auf
 
+-}
 instance Arbitrary Tree where
     arbitrary = do
-                    a <- arbitrary
-                    b <- arbitrary
-                    i <- arbitrary
-                    elements [Leaf i,Node a b]
+                    list <- listOf1 arbitrary
+                    listToTree list
+        where
+            listToTree::[Int]->Gen Tree
+            listToTree [a] = return $ Leaf a
+            listToTree list = do
+                                    a     <- elements [x|x<-[1..((length list)-1)]]
+                                    left  <- listToTree $ take a list
+                                    right <- listToTree $ drop a list
+                                    return $ Node left right
+                                    
