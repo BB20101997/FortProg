@@ -1,4 +1,5 @@
 #!/usr/bin/ghci
+{-# LANGUAGE TemplateHaskell #-}
 
 import Test.QuickCheck
 
@@ -40,6 +41,9 @@ intersect (Set s1) (Set s2) = Set (merge s1 s2)
 size :: Set a -> Int
 size (Set xs) = length xs
 
+isSubSet::(Eq a)=>(Set a)->(Set a)->Bool
+isSubSet (Set sub) super =(length ["Somthing from Sub is not in Super therefore not a Subset"|inSub <- sub,not (inSub `member` super)]) == 0
+
 instance (Arbitrary a) =>  Arbitrary (Set a)  where
     arbitrary = do
                     list <- listOf arbitrary
@@ -63,5 +67,26 @@ prop_remove_reduce_size_by_at_most_one a set = let
                                                     origSize    = size set
                                                         in (origSize==redSize)||((origSize-1)==redSize)
 
+prop_merge_test_int::(Set Int)->(Set Int)->Bool
+prop_merge_test_int = prop_merge_test
+
 prop_merge_test::(Arbitrary a,Eq a) => (Set a)->(Set a)->Bool
-prop_
+prop_merge_test set1@(Set l1) set2@(Set l2) = let
+                                                 all = union set1 set2
+                                                 inl1 = isSubSet set1 all
+                                                 inl2 = isSubSet set2 all
+                                                 allInl1Orl2 = isSubSet all (Set (l1++l2))
+                                               in inl1&&inl2&&allInl1Orl2
+
+prop_empty_check::(Set a)->Bool
+prop_empty_check s@(Set l) = (isEmpty s) == ((length l)==0)
+
+prop_intersect_check::(Arbitrary a,Ord a) => (Set a)->(Set a)->Bool
+prop_intersect_check s1 s2 = let
+                                section  = intersect s1 s2
+                                sectIns1 = isSubSet section s1
+                                sectIns2 = isSubSet section s2
+                             in sectIns1 && sectIns2
+
+return []
+runTests = $quickCheckAll
