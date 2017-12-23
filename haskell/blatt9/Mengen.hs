@@ -88,5 +88,8 @@ prop_intersect_check s1 s2 = let
                                 sectIns2 = isSubSet section s2
                              in sectIns1 && sectIns2
 
+prop_size_test::(Set a)->Bool
+prop_size_test set@(Set list) = (size set) == (length list)
+
 return []
 runTests = $quickCheckAll
