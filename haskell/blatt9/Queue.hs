@@ -81,6 +81,24 @@ prop_dequeue q@(Queue []       []) = False       ==> True {-empty q can't dequeu
 prop_dequeue q@(Queue [hB]    inB) = invariant q ==> let res = dequeue q in (invariant res) && (res == (Queue (reverse inB) []))
 prop_dequeue q@(Queue (hB:tB) inB) = invariant q ==> let res = dequeue q in (invariant res) && (res == (Queue tB           inB))
 
+{-
+    Da Überprüfe auch nicht "schreibe tests und schaue was passiert" heißen könnte sonder "untersuche die funktionen und 'sage' was nicht stimmt" hier eine Wändchen an Text
+
+    size ist ok.
+    
+    smart constructor (queue) Fall 1 sollte (Queue (reverse ys [])) lauten
+    smart constructer (queue) Fall 2 ok
+    
+    isEmptyQueue gegeben der Invarianz rechit hier zu prüfen ob die erste Liste Leer ist nicht aber die zweite
+    
+    enqueue ist ok
+    
+    dequeue sollte queue xs ys sein
+    
+    next ist ok
+
+-}
+
 return []
 runTests = $quickCheckAll
 
