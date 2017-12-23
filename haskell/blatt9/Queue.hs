@@ -2,7 +2,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 
 import Test.QuickCheck
-import Data.Bool
 
 --Begin der Vorgaben
 
