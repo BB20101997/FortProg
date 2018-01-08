@@ -1,0 +1,35 @@
+Es wird von unserer Set und Queue implementierung vom Aufgabensatz 9 ausgegangen
+
+𝚺 = {S,F}
+S = {Int,[Int],Set,Bool}
+F = {
+	empty::Set,
+	insert::Int->Set->Set,
+	member::Int->Set->Bool,
+	delete::Int->Set->Set,
+	isEmpty::Set->Bool,
+	isSubSet::Set->Set->Bool
+	size::Set->Int
+	intersect::Set->Set->Set
+	union::Set->Set->Set
+}
+X = {x::Int,y::Int,s::Set,s2::Set,xl::[Int],yl::[Int]}
+E = {
+	not member x empty,
+	member x (insert x s),
+	member x (insert y (insert x s)),
+	not member x (remove x s),
+	not member x (remove x (insert x s)),
+	isEmpty empty,
+	isEmpty s == (size s == 0)
+	not isEmpty (insert x s),
+	size s == size (remove x s) || size s == (size (remove x s)) + 1,
+	isSubSet s (union s s2) && isSubSet s2 (union s s2)
+	isSubSet (intersection s s2) s && isSubSet (intersection s s2) s2
+}
+
+𝚺 = {S,F}
+S = {Int,Queue}
+F = {}
+X = 
+E = 
