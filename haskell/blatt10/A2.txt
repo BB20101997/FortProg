@@ -1,5 +1,7 @@
 Es wird von unserer Set und Queue implementierung vom Aufgabensatz 9 ausgegangen
 
+Instead of Int any type implementing Eq and Ord may be used instead
+
 𝚺 = {S,F}
 S = {Int,[Int],Set,Bool}
 F = {
@@ -28,8 +30,26 @@ E = {
 	isSubSet (intersection s s2) s && isSubSet (intersection s s2) s2
 }
 
+Instead of Int any type implementing Eq may be used Instead
+
 𝚺 = {S,F}
-S = {Int,Queue}
-F = {}
-X = 
-E = 
+S = {Int,Bool,Queue}
+F = {
+	queue::[Int]->[Int]->Queue Int,
+	emptyQueue::Queue Int,
+	isEmptyQueue::Queue Int->Bool,
+	enqueue::Int->Queue Int->Queue Int,
+	next::Queue Int->Int
+	dequeue::Queue Int->Queue Int
+	size::Queue Int->Int
+	invariant::Queue Int->Bool
+}
+X = {i::Int,l1::[Int],l2::{Int],q::Queue Int}
+E = {
+	(not invariant q) || (size queue l1 l2) == (length l1 + length l2),
+	size queue [] l1 == length l1 && invariant queue [] l1,
+	not (invariant queue l1 l2 && not isEmpty queue l1 l2) || next queue l1 l2 == head l1,
+	not invariant queue l1 l2 || isEmpty queue l1 l2 == null l1,
+	next enqueue i empty == i,
+	isEmptyQueue q || next q == next enqueue i q
+}
