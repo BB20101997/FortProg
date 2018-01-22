@@ -1,0 +1,23 @@
+1)
+	f(g(X,Y),Z,h(Z)) und f(Z,g(Y,X),h(g(a,b)))
+	Z -> g(X,Y)	
+	f(g(X,Y),g(X,Y),h(g(X,Y))) und f(g(X,Y),g(Y,X),h(g(a,b)))
+	X -> Y
+	f(g(Y,Y),g(Y,Y),h(g(Y,Y))) und f(g(Y,Y),g(Y,Y),h(g(a,b)))
+	Y -> a und Y->b führt zum wiederspruch!
+
+2)
+	f(X,g(X)) und f(g(Y),Y)
+	X -> g(Y)
+	f(g(Y),g(g(Y)) und f(g(Y),Y)
+	Y -> g(g(Y)) Occurs Check fails
+
+3)
+	f(B,C,D) und f(g(A,A),g(B,B),g(C,C))
+	B -> g(A,A)
+	f(g(A,A),C,D) und f(g(A,A),g(g(A,A),g(A,A)),g(C,C))
+	C->g(g(A,A),g(A,A))
+	f(g(A,A),g(g(A,A),g(A,A)),D) und f(g(A,A),g(g(A,A),g(A,A)),g(g(g(A,A),g(A,A)),g(g(A,A),g(A,A))))
+	D->g(g(g(A,A),g(A,A)),g(g(A,A),g(A,A)))
+	f(g(A,A),g(g(A,A),g(A,A)),g(g(g(A,A),g(A,A)),g(g(A,A),g(A,A)))) und f(g(A,A),g(g(A,A),g(A,A)),g(g(g(A,A),g(A,A)),g(g(A,A),g(A,A))))
+	es geht auf!
