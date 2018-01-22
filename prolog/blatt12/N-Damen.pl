@@ -1,5 +1,5 @@
 
-queens(N,L) :- lengthBoard(N,L), queenOnBoard(N,L), allSafe(L).
+queens(N,L) :- lengthBoard(N,L), queenOnBoard(N,L), queensDifferently(L), allSafe(L).
 
 
 queenOnBoard(N,[E|RL]) :-  leq(L,N), queenOnBoard(N,RL).
@@ -7,10 +7,15 @@ queenOnBoard(N,[E|RL]) :-  leq(L,N), queenOnBoard(N,RL).
 leq(o , _ ).
 leq(s(N), s(M)) :- leq(N,M).
 
-
-
 lengthBoard(s(o),[_|[]]).
 lengthBoard(s(N), [_|Qs]) :- lengthBoard(N,Qs).
+
+queensDifferently([_|[]]).
+queensDifferently([E|RL]) :- \+member(E,RL), queensDifferently(RL).
+
+
+member(E,[E|_]).
+member(E,[_|R]) :- member(E,R).
 
 
 allSafe([]).
