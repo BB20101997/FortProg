@@ -2,7 +2,7 @@
 queens(N,L) :- lengthBoard(N,L), queenOnBoard(N,L), queensDifferently(L), allSafe(L).
 
 
-queenOnBoard(N,[E|RL]) :-  leq(L,N), queenOnBoard(N,RL).
+queenOnBoard(N,[E|RL]) :-  leq(E,N), queenOnBoard(N,RL).
 
 leq(o , _ ).
 leq(s(N), s(M)) :- leq(N,M).
@@ -30,8 +30,8 @@ differentDiags(Q, Q1, P) :-
   add(Q1, P, Q1PP), Q \= Q1PP, % unterschiedliche Diagonale \
   add(Q , P, QPP ), QPP \= Q1. % unterschiedliche Diagonale /
  
-add(s(o), P, s(QPP)) :- P=QPP. 
-add(s(Q), P, s(QPP)) :- add(Q, P, QPP).  
+add(o,P,P). 
+add(Q,s(P), s(QPP)) :- add(Q, P, QPP).  
 
   
   
