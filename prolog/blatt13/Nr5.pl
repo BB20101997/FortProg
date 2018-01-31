@@ -23,7 +23,7 @@ sudoku(Rows) :-
   , squaresOf9(Rows,Squares), each_distinct(Squares)
 
 % Zum Schluss das Aufzählen:
-  , labeling([ff],Cells).
+  , labeling([],Cells).
 
 writeSudoku([]).
 writeSudoku([Z|Zs]) :- write(Z), nl, writeSudoku(Zs).
